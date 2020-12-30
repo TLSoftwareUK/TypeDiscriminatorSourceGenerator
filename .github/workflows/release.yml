@@ -22,7 +22,7 @@ jobs:
     - name: Pack
       run: dotnet pack --no-build --configuration Release
     - name: Push Nuget
-      run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET}} --skip-duplicate
+      run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET}} --skip-duplicate
 #    - name: AddGithubSource
 #      run: dotnet nuget add source --username PieterjanDeClippel --password ${{secrets.PUBLISH_TO_GITHUB_COM}} --name github https://nuget.pkg.github.com/MintPlayer/index.json
 #    - name: PushGithub
