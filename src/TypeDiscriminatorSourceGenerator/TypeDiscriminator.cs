@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -22,10 +23,16 @@ namespace TLS.TypeDiscriminatorSourceGenerator
 
             foreach(AttributeSyntax syntax in attributes)
             {
-                ClassDeclarationSyntax classDec = syntax.Parent.Parent as ClassDeclarationSyntax;
-                string className = classDec.Identifier.Text;
+                if (syntax.Parent is null)
+                    throw new NullReferenceException();
+                
+                if (syntax.Parent.Parent is not ClassDeclarationSyntax classDec)
+                    throw new NullReferenceException();
 
-                NamespaceDeclarationSyntax namespaceDec = classDec.Parent as NamespaceDeclarationSyntax;
+                string className = classDec.Identifier.Text;
+                
+                if (classDec.Parent is not NamespaceDeclarationSyntax namespaceDec)
+                    throw new NullReferenceException();
                 
                 SourceText output = GenerateTypeConverter(context, namespaceDec.Name.ToString(), className);
 
@@ -114,27 +121,12 @@ public class {classname}Converter : JsonConverter<{classname}>
             (IEnumerable<string> subtypes, IEnumerable<string> names) = FindSubtypes(context, baseClass);
 
             StringBuilder sReadBuildCases = new StringBuilder();
-            /*sReadBuildCases.Append(@"case {classname}TypeDiscriminator.EurocodeStandardBritishNa:
-                    if (!reader.Read() || reader.GetString() != ""TypeValue"")
-                    {
-                        throw new JsonException();
-                    }
-
-                    if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject)
-                    {
-                        throw new JsonException();
-                    }
-
-                    baseClass = (EurocodeStandardBritishNa) JsonSerializer.Deserialize(ref reader,
-                        typeof(EurocodeStandardBritishNa));
-                    break;");*/
 
             StringBuilder sWriterBuildCases = new StringBuilder();
             StringBuilder sNamespaces = new StringBuilder();
 
 
             StringBuilder enumValues = new StringBuilder();
-            //enumValues.Append(@"EurocodeStandardBritishNa = 0");
 
             foreach (string name in names)
             {
@@ -179,9 +171,10 @@ public class {classname}Converter : JsonConverter<{classname}>
                 {
                     
                     classNames.Add(classDec.Identifier.Text);
-
-                    //Add namesapce if required
-                    NamespaceDeclarationSyntax namespaceDec = classDec.Parent as NamespaceDeclarationSyntax;
+                    
+                    if (classDec.Parent is not NamespaceDeclarationSyntax namespaceDec)
+                        throw new NullReferenceException();
+                    
                     if (!requiredNamespaces.Contains(namespaceDec.Name.ToString()))
                         requiredNamespaces.Add(namespaceDec.Name.ToString());
                 }
