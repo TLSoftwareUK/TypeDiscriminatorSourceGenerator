@@ -6,7 +6,7 @@
     <LangVersion>9.0</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild> <!-- Generates a package at build -->
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>TL Software</Authors>
     <PackageId>TLS.TypeDiscriminatorSourceGenerator</PackageId> <!-- Do not include the generator as a lib dependency -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
